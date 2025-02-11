@@ -1,9 +1,13 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:sizer/sizer.dart';
 import 'package:todoapp/customs/form_builder.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:todoapp/infraestructure/Models/login_model.dart';
 
 
 class Login extends StatefulWidget {
@@ -15,11 +19,67 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
  final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
-  
+  LoginPost? loginData;
+  SharedPreferences? prefs;
+
+  @override
+  void initState(){
+    super.initState();
+    initPrefs();
+  }
+
+  initPrefs() async{
+    prefs = await SharedPreferences.getInstance();
+  }
+
+ 
 
   Future<void> login(data) async{
-    final response = await Dio().post('api', data: {"EMAIL" : data['email'], "CODE": data['password']} );
-       print(response.data);
+    final response = await Dio().post('http://192.168.0.15:8000/api/login', data: {"EMAIL" : data['email'], "CODE": data['password']} );
+   
+    loginData = LoginPost.fromJson(response.data);
+    if (loginData?.person != null) {
+       prefs?.setInt('id', loginData!.person!.id);
+      Navigator.pushReplacementNamed(context, '/home');
+    } else {
+      showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+        title: const Text('Credenciales incorrectas'),
+        content: const Text('Por favor, verifica tu correo y contraseña.'),
+        actions: <Widget>[
+          TextButton(
+          child: const Text('Aceptar'),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          ),
+        ],
+        );
+      },
+      );
+    }
+    //     prefs.setInt('id', loginData!.person.id);
+    //   }else{
+    //     showDialog(
+    //     context: context,
+    //     builder: (BuildContext context) {
+    //       return AlertDialog(
+    //         title: const Text('Credenciales incorrectas'),
+    //         content: const Text('Por favor, verifica tu correo y contraseña.'),
+    //         actions: <Widget>[
+    //           TextButton(
+    //             child: const Text('Aceptar'),
+    //             onPressed: () {
+    //               Navigator.of(context).pop();
+    //             },
+    //           ),
+    //         ],
+    //       );
+    //     },
+    //   );
+    // }
   }
 
   @override
@@ -40,7 +100,7 @@ class _LoginState extends State<Login> {
                     height: 50.h,
                     child: Image(
                         image: NetworkImage(
-                            'https://i.ibb.co/B25Hmjd/Servis.png')
+                            'https://media.istockphoto.com/id/1435212785/es/vector/marcar-la-plantilla-de-dise%C3%B1o-vectorial-del-icono-en-fondo-blanco.jpg?s=612x612&w=0&k=20&c=mh-DeEWOnX8BpeISl6C567N45dzVcqUygm61FMvxAGs=')
                       )
                     ),
                   Padding(

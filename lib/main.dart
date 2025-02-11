@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:todoapp/screens/list_tasks.dart';
 import 'screens/index_pages.dart';
 import 'package:sizer/sizer.dart';
 

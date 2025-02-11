@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:todoapp/infraestructure/Models/tasks_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ListTasks extends StatefulWidget {
   const ListTasks({super.key});
@@ -11,16 +12,25 @@ class ListTasks extends StatefulWidget {
 
 class _ListTasksState extends State<ListTasks> {
   Task? task;
+  int? id;
 
   @override
   void initState(){
     super.initState();
     getTasks();
+    _chargeIdUser();
   }
   Future<void> getTasks() async{
-    final response = await Dio().get('api');
+    final response = await Dio().get('http://192.168.0.15:8000/api/tasksByPerson/1');
        task = Task.fromJson(response.data);
        setState((){});
+  }
+
+  _chargeIdUser() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+       id = prefs.getInt('id');
+    });
   }
 
   @override
@@ -47,6 +57,7 @@ class _ListTasksState extends State<ListTasks> {
               const CircularProgressIndicator()
             else
               const Text('No data'),
+              Text(id.toString())
           ],),
       ),
       floatingActionButton: FloatingActionButton(onPressed: (){
