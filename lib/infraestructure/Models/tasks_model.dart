@@ -1,23 +1,25 @@
+// To parse this JSON data, do
+//
+//     final task = taskFromJson(jsonString);
 
-class Tasks {
-    final List<Task> tasks;
 
-    Tasks({
+class Task {
+    final List<TaskElement> tasks;
+
+    Task({
         required this.tasks,
     });
 
-    factory Tasks.fromJson(Map<String, dynamic> json) => Tasks(
-        tasks: List<Task>.from(json["tasks"].map((x) => Task.fromJson(x))),
+    factory Task.fromJson(Map<String, dynamic> json) => Task(
+        tasks: List<TaskElement>.from(json["tasks"].map((x) => TaskElement.fromJson(x))),
     );
-
-  get title => null;
 
     Map<String, dynamic> toJson() => {
         "tasks": List<dynamic>.from(tasks.map((x) => x.toJson())),
     };
 }
 
-class Task {
+class TaskElement {
     final int id;
     final String title;
     final String description;
@@ -27,7 +29,7 @@ class Task {
     final DateTime createdAt;
     final DateTime updatedAt;
 
-    Task({
+    TaskElement({
         required this.id,
         required this.title,
         required this.description,
@@ -38,7 +40,7 @@ class Task {
         required this.updatedAt,
     });
 
-    factory Task.fromJson(Map<String, dynamic> json) => Task(
+    factory TaskElement.fromJson(Map<String, dynamic> json) => TaskElement(
         id: json["id"],
         title: json["title"],
         description: json["description"],
