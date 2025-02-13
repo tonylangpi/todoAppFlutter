@@ -8,6 +8,8 @@ import 'package:sizer/sizer.dart';
 import 'package:todoapp/customs/form_builder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todoapp/infraestructure/Models/login_model.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 
 
 class Login extends StatefulWidget {
@@ -35,7 +37,7 @@ class _LoginState extends State<Login> {
  
 
   Future<void> login(data) async{
-    final response = await Dio().post('http://192.168.0.15:8000/api/login', data: {"EMAIL" : data['email'], "CODE": data['password']} );
+    final response = await Dio().post('${dotenv.env['API_KEY']}/api/login', data: {"EMAIL" : data['email'], "CODE": data['password']} );
    
     loginData = LoginPost.fromJson(response.data);
     if (loginData?.person != null) {
@@ -109,7 +111,7 @@ class _LoginState extends State<Login> {
                     keytype: TextInputType.emailAddress,
                     name: 'email', 
                     obscureText: false, 
-                    hintText: 'Ingrea tu correo', 
+                    hintText: 'Ingresa tu correo', 
                     icon: Icons.mail,
                     validator: FormBuilderValidators.compose(
                       [FormBuilderValidators.required(
@@ -133,9 +135,9 @@ class _LoginState extends State<Login> {
                       [FormBuilderValidators.required(
                         errorText: 'Contraseña requerida'
                       ),
-                      FormBuilderValidators.minLength(
+                      FormBuilderValidators.maxLength(
                         6,
-                        errorText: 'Contraseña invalida'
+                        errorText: 'Contraseña invalida solo 6 digitos'
                       )
                       ]
                     ),),

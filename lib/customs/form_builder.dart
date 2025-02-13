@@ -8,21 +8,24 @@ class FormBuilderCustom extends StatelessWidget {
   final bool obscureText;
   final String hintText;
   final String? Function(String?)? validator;
-  final IconData icon;
+  final IconData? icon;
   final TextInputType  keytype;
+  final dynamic initialValue;
 
   const FormBuilderCustom({super.key, 
   required this.name, 
   required this.obscureText, 
   required this.hintText, 
   this.validator, 
-  required this.icon,
-  required this.keytype});
+  this.icon,
+  required this.keytype,
+  this.initialValue});
 
   @override
   Widget build(BuildContext context) {
     return FormBuilderTextField(
       autovalidateMode: AutovalidateMode.onUserInteraction,
+      initialValue: initialValue,
       name: name,
       obscureText: obscureText,
       style: const TextStyle(color: Colors.white),
